@@ -1,0 +1,3 @@
+[submodule "client"]
+	path = client
+	url = https://github.com/zainAwan9175/Multi-Vendor-eCommerce-MERN-App.git
