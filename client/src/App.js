@@ -40,18 +40,17 @@ function App() {
       {
         dispatch(getAllProductsShop(seller._id));
         dispatch(getAllEventsShop(seller._id));
-        dispatch(getAllEvents())
-        dispatch(getAllProducts())
-       
-
-      }
+    
+        }
         
       }, [dispatch, seller]);
   useEffect(() => {
-    Store.dispatch(loadUser());
-    Store.dispatch(loadSeller());
+    dispatch(loadUser());
+    dispatch(loadSeller());
+        dispatch(getAllEvents())
+        dispatch(getAllProducts())
      getStripeApikey()
-  }, []);
+  }, [dispatch]);
   
  
 

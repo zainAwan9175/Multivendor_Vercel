@@ -94,6 +94,7 @@ export const getAllProducts = () => async (dispatch) => {
       });
   
       const { data } = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/product/get-all-products`);
+      console.log(data.products)
       dispatch({
         type: "getAllProductsSuccess",
         payload: data.products,
