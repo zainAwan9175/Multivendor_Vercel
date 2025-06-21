@@ -51,7 +51,7 @@ router.post(
       }
 
       const activation_token = createActivationToken(user)
-      const activationUrl = `http://3.108.51.142/activate/${activation_token}`
+      const activationUrl = `https://multivendor-client.vercel.app/activate/${activation_token}`
 
       await sendEmail({
         email: user.email,
