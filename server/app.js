@@ -19,10 +19,14 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" })); // Required for form submissions
 app.use(cookieParser())
 app.use(cors({
-  origin: "https://multivendor-client.vercel.app/",
+  origin: [
+    "http://localhost:5000",
+    "https://multivendor-client.vercel.app"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
+
 
 // Sample route
 app.get('/', (req, res) => {

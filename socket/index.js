@@ -5,7 +5,7 @@ const cors = require("cors")
 const server = http.createServer(app)
 const io = socketIO(server, {
   cors: {
-    origin: "https://multivendor-client.vercel.app/",
+    origin: "https://multivendor-client.vercel.app",
     methods: ["GET", "POST"],
   },
   maxHttpBufferSize: 5e6, // Increase buffer size to 5MB for image transfer
