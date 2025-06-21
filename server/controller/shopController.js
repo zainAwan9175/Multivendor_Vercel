@@ -50,7 +50,7 @@ console.log(req.body)
         email: shop.email,
         subject: `Complete your signup by clicking the link inside`,
         emailMessage: `Hi ${shop.name}!
-        This is activation Url: ${activationUrl}`,
+        This is activation Url click on it to continue: ${activationUrl}`,
       });
       res.status(201).json({
         success: true,
