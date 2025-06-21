@@ -10,7 +10,7 @@ import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai"
 import styles from "../../styles/styles"
 import SocketIO from "socket.io-client"
 
-const ENDPOINTS = "http://localhost:8000";
+const ENDPOINTS = "https://multivendor-socket.vercel.app";
 
 const server = process.env.REACT_APP_BACKEND_URL
 

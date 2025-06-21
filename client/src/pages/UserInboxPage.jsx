@@ -12,8 +12,8 @@ import { TfiGallery } from "react-icons/tfi"
 import styles from "../styles/styles"
 
 // Add your server URL here
-const server = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000"
-const ENDPOINT = "http://localhost:8000"
+const server = process.env.REACT_APP_BACKEND_URL 
+const ENDPOINT = "https://multivendor-socket.vercel.app"
 
 const UserInboxPage = () => {
   const { user } = useSelector((state) => state.user)
