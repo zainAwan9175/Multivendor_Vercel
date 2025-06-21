@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" })); // Required for 
 app.use(cookieParser())
 app.use(cors({
   origin: [
-    "http://localhost:3000",
+    "https://multivendor-client.vercel.app",
     "https://multivendor-client.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
