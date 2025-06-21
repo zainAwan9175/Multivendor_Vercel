@@ -31,7 +31,7 @@ function App() {
   const dispatch = useDispatch();
     const { seller } = useSelector((state) => state.seller);
       async function getStripeApikey() {
-    const { data } = await axios.get(`http://localhost:5000/payment/stripeapikey`);
+    const { data } = await axios.get(`https://multivendor-client.vercel.app/payment/stripeapikey`);
     console.log("in this the stipe api key",data);
     setStripeApiKey(data.stripeApikey);
   }

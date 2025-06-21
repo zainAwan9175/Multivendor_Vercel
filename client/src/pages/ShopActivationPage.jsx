@@ -15,7 +15,7 @@ const ActivationPage = () => {
       
       const sendResponse = async () => {
         try {
-          const response = await axios.post(`http://localhost:5000/shop/activation`, { activation_token });
+          const response = await axios.post(`https://multivendor-server.vercel.app/shop/activation`, { activation_token });
           console.log("Activation response:", response.data); // Add this debug line
           setStatus("success");
           toast.success("Account created successfully");

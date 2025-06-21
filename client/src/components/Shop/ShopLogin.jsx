@@ -18,7 +18,7 @@ const ShopLogin = () => {
   
     await axios
       .post(
-        "http://localhost:5000/shop/login-shop", // Ensure this matches your backend URL
+        "https://multivendor-server.vercel.app/shop/login-shop", // Ensure this matches your backend URL
         {
           email,
           password,
