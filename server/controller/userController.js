@@ -15,60 +15,61 @@ cloudinary.config({
   api_key: 'your-api-key',
   api_secret: 'your-api-secret',
 });
+
 router.post(
   "/create-user",
   catchAsyncError(async (req, res, next) => {
-    console.log("Received data:", req.body);
+    console.log("Received data:", req.body)
 
-    const { name, email, password, file } = req.body;
+    const { name, email, password, file } = req.body
 
     if (!name || !email || !password || !file) {
-      return next(new ErrorHandler(400, "All fields are required"));
+      return next(new ErrorHandler("All fields are required", 400)) // Fixed: message first, then status code
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email })
 
     if (existingUser) {
-      return next(
-        new ErrorHandler(400, `User with this email ${email} already exists.`)
-      );
+      return next(new ErrorHandler(400,`User with this email ${email} already exists.`)) // Fixed: message first, then status code
     }
 
-    const myCloud = await cloudinary.v2.uploader.upload(file, {
-      folder: "avatar",
-      width: 150,
-      crop: "scale",
-    });
-
-    const user = {
-      name,
-      email,
-      password,
-      avatar: {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      },
-    };
-
-    const activation_token = createActivationToken(user);
-    const activationUrl = `http://3.108.51.142/activate/${activation_token}`;
-
     try {
+      const myCloud = await cloudinary.uploader.upload(file, {
+        folder: "avatar",
+        width: 150,
+        crop: "scale",
+      })
+
+      const user = {
+        name,
+        email,
+        password,
+        avatar: {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        },
+      }
+
+      const activation_token = createActivationToken(user)
+      const activationUrl = `http://3.108.51.142/activate/${activation_token}`
+
       await sendEmail({
         email: user.email,
         subject: "Complete your signup by clicking the link inside",
         emailMessage: `Hi ${user.name}!\n\nClick the following link to activate your account:\n\n${activationUrl}`,
-      });
+      })
 
       res.status(201).json({
         success: true,
         message: `Please check your email (${user.email}) to activate your account.`,
-      });
+      })
     } catch (error) {
-            new ErrorHandler(500, "Failed to send email: " + error.message);
+      console.error("Error in user creation:", error)
+      return next(new ErrorHandler(500,"Failed to create user: " + error.message)) // Fixed: message first, then status code
     }
-  })
-);
+  }),
+)
+
 
 const createActivationToken = (user) => {
   return jwt.sign(user, process.env.JWT_SECRET_KEY, {
