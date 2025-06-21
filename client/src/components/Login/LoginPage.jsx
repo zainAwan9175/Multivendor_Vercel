@@ -6,15 +6,16 @@ import axios from "axios";
 
 import styles from "../../styles/styles.js";
 
-
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [visible, setVisible] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // <-- Loader state
 
   const submitFormHandler = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     try {
       await axios
         .post(
@@ -27,14 +28,18 @@ const LoginPage = () => {
           navigate("/");
           window.location.reload(true);
         })
-        .catch((e) => toast.error(e.response.data.message));
+        .catch((e) => {
+          toast.error(e.response.data.message);
+          setLoading(false); // Stop loading on error
+        });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
+      setLoading(false); // Stop loading on error
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8  ">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Login
@@ -44,7 +49,7 @@ const LoginPage = () => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={submitFormHandler}>
             <div className="block text-sm font-medium text-gray-700">
-              <label htmlFor="">Email Address</label>
+              <label htmlFor="email">Email Address</label>
               <div className="mt-1">
                 <input
                   type="email"
@@ -57,6 +62,7 @@ const LoginPage = () => {
                 />
               </div>
             </div>
+
             <div className="block text-sm font-medium text-gray-700">
               <label htmlFor="password">Password</label>
               <div className="mt-1 relative">
@@ -84,8 +90,9 @@ const LoginPage = () => {
                 )}
               </div>
             </div>
+
             <div className={`${styles.normalFlex} justify-between`}>
-              <div className={`${styles.normalFlex} `}>
+              <div className={`${styles.normalFlex}`}>
                 <input
                   type="checkbox"
                   name="remember-me"
@@ -102,21 +109,51 @@ const LoginPage = () => {
 
               <div className="text-sm">
                 <a
-                  href=".forgot-password"
+                  href="/forgot-password"
                   className="font-medium text-blue-600 hover:text-blue-500"
                 >
                   Forgot Password?
                 </a>
               </div>
             </div>
+
             <div>
               <button
                 type="submit"
-                className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                disabled={loading}
+                className={`group relative w-full h-[40px] flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                  loading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
               >
-                Submit
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                ) : (
+                  "Submit"
+                )}
               </button>
             </div>
+
             <div className={`${styles.normalFlex} w-full`}>
               <h4>Not have any account?</h4>
               <Link className="text-blue-600 pl-2" to="/sign-up">

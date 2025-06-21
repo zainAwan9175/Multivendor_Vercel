@@ -1,49 +1,59 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
 import { toast } from "react-toastify";
 import { RxAvatar } from "react-icons/rx";
 
 const ShopCreate = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState();
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  const [zipCode, setZipCode] = useState();
-  const [avatar, setAvatar] = useState();
+  const [zipCode, setZipCode] = useState("");
+  const [avatar, setAvatar] = useState(null);
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // <-- loading state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    axios
-      .post(`${process.env.REACT_APP_BACKEND_URL}/shop/create-shop`, {
-        name,
-        email,
-        password,
-        avatar,
-        zipCode,
-        address,
-        phoneNumber,
-      })
-      .then((res) => {
-        toast.success(res.data.message);
-        setName("");
-        setEmail("");
-        setPassword("");
-        setAvatar();
-        setZipCode();
-        setAddress("");
-        setPhoneNumber();
-      })
-      .catch((error) => {
-        console.log(error)
-        toast.error(error.response.data.message);
-      });
+    setLoading(true); // start loading
+    try {
+      await axios
+        .post(`${process.env.REACT_APP_BACKEND_URL}/shop/create-shop`, {
+          name,
+          email,
+          password,
+          avatar,
+          zipCode,
+          address,
+          phoneNumber,
+        })
+        .then((res) => {
+          toast.success(res.data.message);
+          // Reset all fields
+          setName("");
+          setEmail("");
+          setPassword("");
+          setAvatar(null);
+          setZipCode("");
+          setAddress("");
+          setPhoneNumber("");
+          setLoading(false); // stop loading
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error(
+            error.response?.data?.message || "An error occurred while creating shop"
+          );
+          setLoading(false); // stop loading on error
+        });
+    } catch (error) {
+      toast.error("An unexpected error occurred");
+      setLoading(false);
+    }
   };
 
   const handleFileInputChange = (e) => {
@@ -55,7 +65,9 @@ const ShopCreate = () => {
       }
     };
 
-    reader.readAsDataURL(e.target.files[0]);
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
   };
 
   return (
@@ -68,16 +80,17 @@ const ShopCreate = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[35rem]">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Shop Name */}
             <div>
               <label
-                htmlFor="email"
+                htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
               >
                 Shop Name
               </label>
               <div className="mt-1">
                 <input
-                  type="name"
+                  type="text"
                   name="name"
                   required
                   value={name}
@@ -87,16 +100,17 @@ const ShopCreate = () => {
               </div>
             </div>
 
+            {/* Phone Number */}
             <div>
               <label
-                htmlFor="email"
+                htmlFor="phone-number"
                 className="block text-sm font-medium text-gray-700"
               >
                 Phone Number
               </label>
               <div className="mt-1">
                 <input
-                  type="number"
+                  type="tel"
                   name="phone-number"
                   required
                   value={phoneNumber}
@@ -106,6 +120,7 @@ const ShopCreate = () => {
               </div>
             </div>
 
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
@@ -126,16 +141,17 @@ const ShopCreate = () => {
               </div>
             </div>
 
+            {/* Address */}
             <div>
               <label
-                htmlFor="email"
+                htmlFor="address"
                 className="block text-sm font-medium text-gray-700"
               >
                 Address
               </label>
               <div className="mt-1">
                 <input
-                  type="address"
+                  type="text"
                   name="address"
                   required
                   value={address}
@@ -145,17 +161,18 @@ const ShopCreate = () => {
               </div>
             </div>
 
+            {/* Zip Code */}
             <div>
               <label
-                htmlFor="email"
+                htmlFor="zipCode"
                 className="block text-sm font-medium text-gray-700"
               >
                 Zip Code
               </label>
               <div className="mt-1">
                 <input
-                  type="number"
-                  name="zipcode"
+                  type="text"
+                  name="zipCode"
                   required
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
@@ -164,6 +181,7 @@ const ShopCreate = () => {
               </div>
             </div>
 
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
@@ -197,11 +215,14 @@ const ShopCreate = () => {
               </div>
             </div>
 
+            {/* Avatar Upload */}
             <div>
               <label
                 htmlFor="avatar"
                 className="block text-sm font-medium text-gray-700"
-              ></label>
+              >
+                Avatar
+              </label>
               <div className="mt-2 flex items-center">
                 <span className="inline-block h-8 w-8 rounded-full overflow-hidden">
                   {avatar ? (
@@ -211,12 +232,12 @@ const ShopCreate = () => {
                       className="h-full w-full object-cover rounded-full"
                     />
                   ) : (
-                    <RxAvatar className="h-8 w-8" />
+                    <RxAvatar className="h-8 w-8 text-gray-400" />
                   )}
                 </span>
                 <label
                   htmlFor="file-input"
-                  className="ml-5 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                  className="ml-5 flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
                 >
                   <span>Upload a file</span>
                   <input
@@ -225,19 +246,51 @@ const ShopCreate = () => {
                     id="file-input"
                     onChange={handleFileInputChange}
                     className="sr-only"
+                    accept="image/*"
                   />
                 </label>
               </div>
             </div>
 
+            {/* Submit Button */}
             <div>
               <button
                 type="submit"
-                className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                disabled={loading}
+                className={`group relative w-full h-[40px] flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                  loading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
               >
-                Submit
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                ) : (
+                  "Submit"
+                )}
               </button>
             </div>
+
+            {/* Already have account */}
             <div className={`${styles.normalFlex} w-full`}>
               <h4>Already have an account?</h4>
               <Link to="/shop-login" className="text-blue-600 pl-2">

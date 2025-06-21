@@ -1,9 +1,8 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import { toast } from "react-toastify";
 
 const ShopLogin = () => {
@@ -11,31 +10,35 @@ const ShopLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // loader state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("hlo");
-  
-    await axios
-      .post(
-        "https://multivendor-server.vercel.app/shop/login-shop", // Ensure this matches your backend URL
-        {
-          email,
-          password,
-        },
-        { withCredentials: true } // Use this only if needed on the server side
-      )
-      .then((res) => {
-        toast.success("Login Success!");
-        navigate("/dashboard");
-        window.location.reload(true);
-      })
-      .catch((err) => {
-        console.error("Error during login:", err);
-        toast.error(err.response ? err.response.data.message : "An error occurred");
-      });
+    setLoading(true); // start loading
+    try {
+      await axios
+        .post(
+          "https://multivendor-server.vercel.app/shop/login-shop", // backend URL
+          { email, password },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          toast.success("Login Success!");
+          navigate("/dashboard");
+          window.location.reload(true);
+        })
+        .catch((err) => {
+          console.error("Error during login:", err);
+          toast.error(
+            err.response ? err.response.data.message : "An error occurred"
+          );
+          setLoading(false); // stop loading on error
+        });
+    } catch (error) {
+      toast.error("An error occurred");
+      setLoading(false);
+    }
   };
-  
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -66,6 +69,7 @@ const ShopLogin = () => {
                 />
               </div>
             </div>
+
             <div>
               <label
                 htmlFor="password"
@@ -98,6 +102,7 @@ const ShopLogin = () => {
                 )}
               </div>
             </div>
+
             <div className={`${styles.normalFlex} justify-between`}>
               <div className={`${styles.normalFlex}`}>
                 <input
@@ -122,14 +127,44 @@ const ShopLogin = () => {
                 </a>
               </div>
             </div>
+
             <div>
               <button
                 type="submit"
-                className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                disabled={loading}
+                className={`group relative w-full h-[40px] flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                  loading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
               >
-                Submit
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                ) : (
+                  "Submit"
+                )}
               </button>
             </div>
+
             <div className={`${styles.normalFlex} w-full`}>
               <h4>Not have any account?</h4>
               <Link to="/shop-create" className="text-blue-600 pl-2">
