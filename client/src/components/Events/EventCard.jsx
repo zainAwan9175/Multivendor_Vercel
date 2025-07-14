@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/reducers/cart";
 import { toast } from "react-toastify";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+
 import { useState } from "react";
 
 const EventCard = ({ active, data }) => {
@@ -31,14 +31,7 @@ const EventCard = ({ active, data }) => {
 
   return (
     <div className="w-full max-w-full bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch gap-0 mb-12 overflow-hidden p-0 transition-all duration-300 group hover:shadow-[0_16px_64px_0_rgba(16,185,129,0.22)] border border-emerald-100">
-      {/* Wishlist icon */}
-      <div className="absolute top-6 right-8 z-20">
-        {wish ? (
-          <AiFillHeart size={32} className="text-amber-400 drop-shadow cursor-pointer transition-transform hover:scale-110" onClick={() => setWish(false)} title="Remove from wishlist" />
-        ) : (
-          <AiOutlineHeart size={32} className="text-emerald-500 drop-shadow cursor-pointer transition-transform hover:scale-110" onClick={() => setWish(true)} title="Add to wishlist" />
-        )}
-      </div>
+  
 
       {/* Image section */}
       <div className="flex-shrink-0 w-full md:w-[340px] flex items-center justify-center bg-white p-8 md:p-10">

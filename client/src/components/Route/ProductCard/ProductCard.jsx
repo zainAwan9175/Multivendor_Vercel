@@ -41,6 +41,7 @@ const ProductCard = ({ data, isEvent }) => {
   const addToWishlistHandler = (data) => {
     setClick(!click);
     dispatch(addToWishlist(data));
+    toast.success("Item added to wishlist!");
   };
 
   const addToCartHandler = (id) => {
