@@ -87,131 +87,123 @@ const ProfileContent = ({ active }) => {
   }
 
   return (
-    
-<div className="w-full flex justify-center">
-<div className="w-full lg:w-[70%] ">
-      {/* profile */}
-      {active === 1 && (
-        <>
-          <div className="flex justify-center w-full">
-            <div className="relative">
-              <img
-                src={`${user?.avatar?.url}`}
-                className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132] shadow-lg"
-                alt=""
-              />
-              <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px] hover:bg-gray-200 transition-all">
-                <input type="file" id="image" className="hidden" onChange={handleImage} />
-                <label htmlFor="image" className="cursor-pointer">
-                  <AiOutlineCamera />
-                </label>
+    <div className="w-full flex justify-center">
+      <div className="w-full lg:w-[70%] ">
+        {/* profile */}
+        {active === 1 && (
+          <>
+            <div className="flex justify-center w-full">
+              <div className="relative">
+                <img
+                  src={`${user?.avatar?.url}`}
+                  className="w-[120px] h-[120px] rounded-full object-cover border-4 border-emerald-400 shadow-xl bg-white"
+                  alt=""
+                />
+                <div className="w-[36px] h-[36px] bg-amber-100 border-2 border-emerald-200 rounded-full flex items-center justify-center cursor-pointer absolute bottom-2 right-2 hover:bg-amber-200 transition-all shadow-md">
+                  <input type="file" id="image" className="hidden" onChange={handleImage} />
+                  <label htmlFor="image" className="cursor-pointer text-emerald-700 hover:text-amber-600">
+                    <AiOutlineCamera size={20} />
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-          <br />
-          <br />
-          <div className="w-full px-5">
-            <form onSubmit={handleSubmit} aria-required={true} className="bg-white p-6 rounded-lg shadow-md">
-              <div className="w-full 800px:flex block pb-3">
-                <div className="w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2 font-medium text-gray-700">Full Name</label>
+            <div className="w-full px-2 sm:px-5 mt-6">
+              <form onSubmit={handleSubmit} aria-required={true} className="bg-white/90 p-6 rounded-2xl shadow-lg border border-emerald-100">
+                <div className="w-full flex flex-col md:flex-row gap-4 pb-3">
+                  <div className="w-full md:w-1/2">
+                    <label className="block pb-1 font-semibold text-emerald-800">Full Name</label>
+                    <input
+                      type="text"
+                      className="w-full border-2 border-emerald-200 rounded-lg p-2 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 focus:outline-none bg-emerald-50 placeholder-emerald-400 text-emerald-900 font-medium transition-all duration-200 mb-2"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter your name"
+                    />
+                  </div>
+                  <div className="w-full md:w-1/2">
+                    <label className="block pb-1 font-semibold text-emerald-800">Email Address</label>
+                    <input
+                      type="text"
+                      className="w-full border-2 border-emerald-200 rounded-lg p-2 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 focus:outline-none bg-emerald-50 placeholder-emerald-400 text-emerald-900 font-medium transition-all duration-200 mb-2"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex flex-col md:flex-row gap-4 pb-3">
+                  <div className="w-full md:w-1/2">
+                    <label className="block pb-1 font-semibold text-emerald-800">Phone Number</label>
+                    <input
+                      type="number"
+                      className="w-full border-2 border-emerald-200 rounded-lg p-2 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 focus:outline-none bg-emerald-50 placeholder-emerald-400 text-emerald-900 font-medium transition-all duration-200 mb-2"
+                      required
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
+                  <div className="w-full md:w-1/2">
+                    <label className="block pb-1 font-semibold text-emerald-800">Enter your password</label>
+                    <input
+                      type="password"
+                      className="w-full border-2 border-emerald-200 rounded-lg p-2 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 focus:outline-none bg-emerald-50 placeholder-emerald-400 text-emerald-900 font-medium transition-all duration-200 mb-2"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-center mt-6">
                   <input
-                    type="text"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0 border-2 focus:border-[#3ad132] focus:outline-none rounded-md p-2`}
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    className="w-[200px] h-[44px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-md cursor-pointer hover:scale-105 transition-all border-none text-base"
+                    value="Update"
+                    type="submit"
                   />
                 </div>
-                <div className="w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2 font-medium text-gray-700">Email Address</label>
-                  <input
-                    type="text"
-                    className={`${styles.input} !w-[95%] mb-1 800px:mb-0 border-2 focus:border-[#3ad132] focus:outline-none rounded-md p-2`}
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="w-full 800px:flex block pb-3">
-                <div className="w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2 font-medium text-gray-700">Phone Number</label>
-                  <input
-                    type="number"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0 border-2 focus:border-[#3ad132] focus:outline-none rounded-md p-2`}
-                    required
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                </div>
-
-                <div className="w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2 font-medium text-gray-700">Enter your password</label>
-                  <input
-                    type="password"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0 border-2 focus:border-[#3ad132] focus:outline-none rounded-md p-2`}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-
-           
-            
-              </div>
-              <input
-                className={`w-[250px] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer hover:bg-[#3a24db] hover:text-white transition-all font-medium`}
-                required
-                value="Update"
-                type="submit"
-              />
-            </form>
-          </div>
-        </>
-      )}
+              </form>
+            </div>
+          </>
+        )}
 
       {/* order */}
       {active === 2 && (
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">My Orders</h2>
+        <div className="bg-white/90 p-6 rounded-2xl shadow-lg border border-emerald-100">
+          <h2 className="text-2xl font-bold mb-4 text-emerald-700">My Orders</h2>
           <AllOrders />
         </div>
       )}
 
       {/* Refund */}
       {active === 3 && (
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">My Refunds</h2>
+        <div className="bg-white/90 p-6 rounded-2xl shadow-lg border border-emerald-100">
+          <h2 className="text-2xl font-bold mb-4 text-emerald-700">My Refunds</h2>
           <AllRefundOrders />
         </div>
       )}
 
       {/* Track order */}
       {active === 5 && (
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Track Orders</h2>
+        <div className="bg-white/90 p-6 rounded-2xl shadow-lg border border-emerald-100">
+          <h2 className="text-2xl font-bold mb-4 text-emerald-700">Track Orders</h2>
           <TrackOrder />
         </div>
       )}
 
       {/* Change Password */}
       {active === 6 && (
-        <div className="bg-white p-4 rounded-lg shadow-md">
+        <div className="bg-white/90 p-6 rounded-2xl shadow-lg border border-emerald-100">
           <ChangePassword />
         </div>
       )}
 
-      {/*  user Payments */}
-      {active === 7 && (
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <Payment />
-        </div>
-      )}
+    
       {/*  user Address */}
       {active === 8 && (
-        <div className="bg-white p-4 rounded-lg shadow-md">
+        <div className="bg-white/90 p-6 rounded-2xl shadow-lg border border-emerald-100">
           <Address />
         </div>
       )}
@@ -350,44 +342,11 @@ const AllOrders = () => {
 
 const AllRefundOrders = () => {
   const { user } = useSelector((state) => state.user)
-  // const { orders } = useSelector((state) => state.order);
-  const orders = [
-    {
-      _id: "7463wbfbhfbrtr28820221",
-      orderItems: [{ name: "iPhone 14 Pro Max" }],
-      totalPrice: 120,
-      orderStatus: "Processing refund",
-    },
-    {
-      _id: "8463gcfgjdfkjg33443322",
-      orderItems: [{ name: "Samsung Galaxy S23 Ultra" }],
-      totalPrice: 140,
-      orderStatus: "Shipped",
-    },
-    {
-      _id: "9463hfhjdfjdf99384412",
-      orderItems: [{ name: "MacBook Pro 16-inch" }],
-      totalPrice: 2500,
-      orderStatus: "Delivered",
-    },
-    {
-      _id: "10463dfdfkdkdk9484833",
-      orderItems: [{ name: "Sony WH-1000XM5 Headphones" }],
-      totalPrice: 350,
-      orderStatus: "Processing",
-    },
-    {
-      _id: "11463sdfsdffjfj9848334",
-      orderItems: [{ name: "Apple Watch Series 9" }],
-      totalPrice: 400,
-      orderStatus: "Cancelled",
-    },
-  ]
+   const { orders } = useSelector((state) => state.order);
+ 
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    // dispatch(getAllOrdersOfUser(user._id));
-  }, [])
+
 
   const eligibleOrders = orders && orders.filter((item) => item.orderStatus === "Processing refund")
 
@@ -683,34 +642,7 @@ const ChangePassword = () => {
     </div>
   )
 }
-const Payment = () => {
-  return (
-    <div className="w-full px-5">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-[25px] font-[600] text-[000000ba] pb-2">Payment Methods</h1>
-        <div className={`${styles.button} !rounded-md hover:opacity-90 transition-all`}>
-          <span className="text-[#fff]">Add New</span>
-        </div>
-      </div>
 
-      <br />
-
-      <div className="w-full bg-white h-[70px] rounded-[4px] flex items-center px-3 shadow-md justify-between pr-10 hover:bg-gray-50 transition-all">
-        <div className="flex items-center">
-          <img src="https://bonik-react.vercel.app/assets/images/payment-methods/Visa.svg" alt="" className="h-8" />
-          <h5 className="pl-5 font-[600]">Shahriar Sajeeb</h5>
-        </div>
-        <div className="pl-8 flex items-center">
-          <h6>1234 **** **** ****</h6>
-          <h5 className="pl-6">08/2022</h5>
-        </div>
-        <div className="min-w-[10%] flex items-center justify-between pl-8">
-          <AiOutlineDelete size={25} className="cursor-pointer hover:text-red-500 transition-colors" />
-        </div>
-      </div>
-    </div>
-  )
-}
 const Address = () => {
   const [open, setOpen] = useState(false)
   const [country, setCountry] = useState("")

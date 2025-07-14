@@ -1,5 +1,5 @@
 "use client"
-import { AiOutlineLogin, AiOutlineMessage, AiOutlineCreditCard } from "react-icons/ai" // Added AiOutlineCreditCard
+import { AiOutlineLogin, AiOutlineMessage, AiOutlineCreditCard } from "react-icons/ai"
 import { RiLockPasswordLine } from "react-icons/ri"
 import { HiOutlineReceiptRefund, HiOutlineShoppingBag } from "react-icons/hi"
 import { MdOutlineAdminPanelSettings, MdOutlineTrackChanges } from "react-icons/md"
@@ -10,6 +10,9 @@ import axios from "axios"
 import { toast } from "react-toastify"
 import { useSelector } from "react-redux"
 
+const emerald = "#059669";
+const amber = "#f59e42";
+
 const ProfileSidebar = ({ setActive, active }) => {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.user)
@@ -18,7 +21,6 @@ const ProfileSidebar = ({ setActive, active }) => {
       .get(`${process.env.REACT_APP_BACKEND_URL}/user/logout`, { withCredentials: true })
       .then((res) => {
         toast.success(res.data.message)
-        // window.location.reload(true);
         navigate("/login")
       })
       .catch((error) => {
@@ -26,131 +28,100 @@ const ProfileSidebar = ({ setActive, active }) => {
       })
   }
 
+  const sidebarItems = [
+    {
+      key: 1,
+      icon: <RxPerson size={22} color={active === 1 ? emerald : "#555"} />,
+      label: "Profile",
+      onClick: () => setActive(1),
+    },
+    {
+      key: 2,
+      icon: <HiOutlineShoppingBag size={22} color={active === 2 ? emerald : "#555"} />,
+      label: "Orders",
+      onClick: () => setActive(2),
+    },
+    {
+      key: 3,
+      icon: <HiOutlineReceiptRefund size={22} color={active === 3 ? emerald : "#555"} />,
+      label: "Refunds",
+      onClick: () => setActive(3),
+    },
+    {
+      key: 4,
+      icon: <AiOutlineMessage size={22} color={active === 4 ? emerald : "#555"} />,
+      label: "Inbox",
+      onClick: () => setActive(4) || navigate("/inbox"),
+    },
+    {
+      key: 5,
+      icon: <MdOutlineTrackChanges size={22} color={active === 5 ? emerald : "#555"} />,
+      label: "Track Order",
+      onClick: () => setActive(5),
+    },
+    {
+      key: 6,
+      icon: <RiLockPasswordLine size={22} color={active === 6 ? emerald : "#555"} />,
+      label: "Change Password",
+      onClick: () => setActive(6),
+    },
+    
+    {
+      key: 8,
+      icon: <TbAddressBook size={22} color={active === 8 ? emerald : "#555"} />,
+      label: "Address",
+      onClick: () => setActive(8),
+    },
+  ];
+
   return (
-    <div className="w-[70px] md:w-[240px] bg-white shadow-md rounded-[10px] p-4 pt-8 transition-all duration-300">
-      <div className="flex flex-col space-y-6">
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 1 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(1)}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <RxPerson size={20} color={active === 1 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 1 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Profile
-            </span>
+    <div className="w-[70px] md:w-[240px] bg-white shadow-lg rounded-2xl p-4 pt-8 transition-all duration-300">
+      <div className="flex flex-col space-y-2">
+        {sidebarItems.map((item) => (
+          <div
+            key={item.key}
+            onClick={item.onClick}
+            className={`flex items-center gap-3 cursor-pointer w-full p-2 rounded-xl transition-all font-medium select-none
+              ${active === item.key
+                ? "bg-emerald-50 border-l-4 border-amber-400 text-emerald-700 shadow"
+                : "hover:bg-amber-50 hover:text-emerald-700"}
+            `}
+            style={{
+              background: active === item.key ? "linear-gradient(90deg, #fefce8 0%, #d1fae5 100%)" : undefined,
+            }}
+          >
+            {item.icon}
+            <span className={`pl-1 ${active === item.key ? "text-emerald-700 font-semibold" : "text-gray-700"} hidden md:block`}>{item.label}</span>
           </div>
-        </div>
-
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 2 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(2)}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <HiOutlineShoppingBag size={20} color={active === 2 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 2 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Orders
-            </span>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 3 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(3)}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <HiOutlineReceiptRefund size={20} color={active === 3 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 3 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Refunds
-            </span>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 4 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(4) || navigate("/inbox")}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <AiOutlineMessage size={20} color={active === 4 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 4 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Inbox
-            </span>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 5 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(5)}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <MdOutlineTrackChanges size={20} color={active === 5 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 5 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Track Order
-            </span>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 6 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(6)}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <RiLockPasswordLine size={20} color={active === 6 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 6 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Change Password
-            </span>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 7 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(7)}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <AiOutlineCreditCard size={20} color={active === 7 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 7 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Payment Method
-            </span>
-          </div>
-        </div>
-
-        <div
-          className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 8 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
-          onClick={() => setActive(8)}
-        >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <TbAddressBook size={20} color={active === 8 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 8 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Address
-            </span>
-          </div>
-        </div>
+        ))}
 
         {user && user?.role === "Admin" && (
           <Link to="/admin/dashboard">
             <div
-              className={`flex items-center cursor-pointer w-full p-2 rounded-md transition-all ${active === 9 ? "bg-gray-100 text-[red]" : "hover:bg-gray-50"}`}
+              className={`flex items-center gap-3 cursor-pointer w-full p-2 rounded-xl transition-all font-medium select-none
+                ${active === 9
+                  ? "bg-emerald-50 border-l-4 border-amber-400 text-emerald-700 shadow"
+                  : "hover:bg-amber-50 hover:text-emerald-700"}
+              `}
+              style={{
+                background: active === 9 ? "linear-gradient(90deg, #fefce8 0%, #d1fae5 100%)" : undefined,
+              }}
               onClick={() => setActive(9)}
             >
-              <div className="flex justify-center md:justify-start w-full md:w-auto">
-                <MdOutlineAdminPanelSettings size={20} color={active === 9 ? "red" : "#555"} />
-                <span className={`pl-3 ${active === 9 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-                  Admin Dashboard
-                </span>
-              </div>
+              <MdOutlineAdminPanelSettings size={22} color={active === 9 ? emerald : "#555"} />
+              <span className={`pl-1 ${active === 9 ? "text-emerald-700 font-semibold" : "text-gray-700"} hidden md:block`}>
+                Admin Dashboard
+              </span>
             </div>
           </Link>
         )}
 
         <div
-          className="flex items-center cursor-pointer w-full p-2 rounded-md transition-all hover:bg-gray-50 mt-4 border-t pt-4"
+          className="flex items-center gap-3 cursor-pointer w-full p-2 rounded-xl transition-all font-medium select-none mt-4 border-t pt-4 hover:bg-amber-50 hover:text-emerald-700"
           onClick={logoutHandler}
         >
-          <div className="flex justify-center md:justify-start w-full md:w-auto">
-            <AiOutlineLogin size={20} color={active === 10 ? "red" : "#555"} />
-            <span className={`pl-3 ${active === 10 ? "text-[red] font-medium" : "text-gray-700"} hidden md:block`}>
-              Log out
-            </span>
-          </div>
+          <AiOutlineLogin size={22} color={"#e11d48"} />
+          <span className="pl-1 text-rose-600 font-semibold hidden md:block">Log out</span>
         </div>
       </div>
     </div>

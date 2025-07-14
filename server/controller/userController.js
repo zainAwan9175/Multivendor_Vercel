@@ -24,13 +24,13 @@ router.post(
     const { name, email, password, file } = req.body
 
     if (!name || !email || !password || !file) {
-      return next(new ErrorHandler("All fields are required", 400)) // Fixed: message first, then status code
+      return next(new ErrorHandler(400, "All fields are required"))
     }
 
     const existingUser = await User.findOne({ email })
 
     if (existingUser) {
-      return next(new ErrorHandler(400,`User with this email ${email} already exists.`)) // Fixed: message first, then status code
+      return next(new ErrorHandler(400, `User with this email ${email} already exists.`))
     }
 
     try {
@@ -65,7 +65,7 @@ router.post(
       })
     } catch (error) {
       console.error("Error in user creation:", error)
-      return next(new ErrorHandler(500,"Failed to create user: " + error.message)) // Fixed: message first, then status code
+      return next(new ErrorHandler(500, "Failed to create user: " + error.message))
     }
   }),
 )
@@ -84,7 +84,7 @@ router.post(
     const newUser = jwt.verify(activation_token, process.env.JWT_SECRET_KEY);
 
     if (!newUser) {
-      return next(new ErrorHandler("Invalid token", 400));
+      return next(new ErrorHandler(400, "Invalid token"));
     }
     const { name, email, password, avatar } = newUser;
 
@@ -131,7 +131,7 @@ router.post(
 
       sendToken(user, 201, res);
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(500, error.message));
     }
   })
 );
@@ -153,7 +153,7 @@ router.get(
         user,
       });
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(500, error.message));
     }
   })
 );
@@ -176,7 +176,7 @@ router.get(
         message: "Logout successfully",
       });
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(500, error.message));
     }
   })
 );
@@ -191,7 +191,7 @@ router.put(
       const user = await User.findById(userId);
 
       if (!user) {
-          return next(new ErrorHandler("User not found", 404));
+          return next(new ErrorHandler(404, "User not found"));
       }
 
       if (avatar) {
@@ -223,7 +223,7 @@ router.put(
            user
       });
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(500, error.message));
     }
   })
 );
@@ -240,21 +240,21 @@ router.put(
 
       // Check if new password and confirm password match
       if (newPassword !== confirmPassword) {
-        return next(new ErrorHandler("New password and confirm password do not match", 400));
+        return next(new ErrorHandler(400,"New password and confirm password do not match"));
       }
 
       // Check if the user exists
       const user = await User.findById(req.user._id.toString()).select('+password');
 
       if (!user) {
-        return next(new ErrorHandler("User not found", 404));
+        return next(new ErrorHandler(404,"User not found"));
       }
       console.log(user)
 
       // Check if the old password matches
       const isMatch = await user.comparePassword(oldPassword);
       if (!isMatch) {
-        return next(new ErrorHandler("Old password is incorrect", 400));
+        return next(new ErrorHandler(400,"Old password is incorrect" ));
       }
 
 
@@ -269,7 +269,7 @@ router.put(
       });
     } catch (error) {
       // Pass the error to the error handling middleware
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(500, error.message));
     }
   })
 );
@@ -284,13 +284,13 @@ router.put("/update-user-info", isAuthenticated, catchAsyncError(async (req, res
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return next(new ErrorHandler("User not found", 400));
+      return next(new ErrorHandler(400,"User not found"));
     }
 
     const isPasswordValid = await user.comparePassword(password);
 
     if (!isPasswordValid) {
-      return next(new ErrorHandler("Please provide the correct information", 400));
+      return next(new ErrorHandler(400,"Please provide the correct information"));
     }
 
     user.name = name;
@@ -321,7 +321,7 @@ router.put("/update-user-addresses", isAuthenticated, catchAsyncError(async (req
       (address) => address.addressType === req.body.addressType
     );
     if (sameTypeAddress) {
-      return next(new ErrorHandler(`${req.body.addressType} address already exists`));
+      return next(new ErrorHandler(400,`${req.body.addressType} address already exists`));
     }
 
     const existsAddress = user.addresses.find(
@@ -353,7 +353,7 @@ router.delete("/delete-user-address/:id", isAuthenticated, catchAsyncError(async
     const user = await User.findById(req.user.id);
 
     if (!user) {
-      return next(new ErrorHandler("User not found", 404));
+      return next(new ErrorHandler(404,"User not found"));
     }
 
     // Filter out the address by ID
@@ -385,7 +385,7 @@ router.get(
         user,
       });
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(500,error.message));
     }
   })
 );

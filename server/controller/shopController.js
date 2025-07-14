@@ -112,8 +112,9 @@ router.post(
       if (!email || !password) {
         return next(new ErrorHandler(400, "Please provide the all fields!"));
       }
-
+      console.log(email,password)
       const shop = await Shop.findOne({ email }).select("+password");
+      console.log(shop)
 
       if (!shop) {
         return next(new ErrorHandler(400, "Shop doesn't exists!"));

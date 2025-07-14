@@ -4,23 +4,32 @@ import {
   AiOutlineHeart,
   AiOutlineMessage,
   AiOutlineShoppingCart,
+  AiFillStar,
+  AiOutlineStar,
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { addToWishlist,removeFromWishlist } from "../../../redux/actions/wishlist";
+import { addToWishlist, removeFromWishlist } from "../../../redux/actions/wishlist";
 import { addToCart } from "../../../redux/reducers/cart";
+import axios from "axios";
+
+const GREEN = "#009966";
+const YELLOW = "#FFC107";
+const ORANGE = "#FFA500";
+const LIGHT_BG = "#fff";
+const SOFT_SHADOW = "0 2px 15px -3px rgba(0,0,0,0.07), 0 10px 20px -2px rgba(0,0,0,0.04)";
+
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
    const { wishlist } = useSelector((state) => state.wishlist);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
+  const navigate = useNavigate();
    const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
-  //   const [select, setSelect] = useState(false);
-
-//   const handleMessageSubmit = () => {};
 
   const decrementCount = () => {
     if (count > 1) {
@@ -47,6 +56,31 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     }
   };
 
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = user._id + data.shop._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      
+      try {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        });
+        
+        // The backend automatically checks for existing conversation and returns it if found
+        // or creates a new one if it doesn't exist
+        navigate(`/inbox?${res.data.conversation._id}`);
+        toast.success("Opening conversation...");
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Failed to create conversation");
+      }
+    } else {
+      toast.error("Please login to create a conversation");
+    }
+  };
+
   useEffect(() => {
     if (wishlist && wishlist.find((i) => i._id === data._id)) {
       setClick(true);
@@ -63,84 +97,79 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const addToWishlistHandler = (data) => {
     setClick(!click);
     dispatch(addToWishlist(data));
+    toast.success("Item added to wishlist!");
   };
 
   return (
-    <div className="bg-[#fff]">
+    <div style={{ background: LIGHT_BG }}>
       {data ? (
-        <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center">
-          <div className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
+        <div style={{ position: "fixed", width: "100%", height: "100vh", top: 0, left: 0, background: "rgba(0,0,0,0.18)", zIndex: 40, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: "90%", maxWidth: 900, height: "90vh", maxHeight: 700, overflowY: "auto", background: LIGHT_BG, borderRadius: 16, boxShadow: SOFT_SHADOW, position: "relative", padding: 24 }}>
             <RxCross1
               size={30}
-              className="absolute right-3 top-3 z-50"
+              style={{ position: "absolute", right: 16, top: 16, zIndex: 50, cursor: "pointer", color: GREEN }}
               onClick={() => setOpen(false)}
             />
 
-            <div className="block w-full 800px:flex">
-              <div className="w-full 800px:w-[50%]">
-                <img src={`${data.images && data.images[0]?.url}`} alt="" />
-                <div className="flex">
-                  <Link to={`/shop/preview/${data.shop._id}`} className="flex">
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 32 }}>
+              <div style={{ flex: 1, minWidth: 280 }}>
+                <img src={`${data.images && data.images[0]?.url}`} alt="" style={{ width: "100%", maxHeight: 260, objectFit: "contain", borderRadius: 12, boxShadow: SOFT_SHADOW, background: "#f8f8f8" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 16 }}>
+                  <Link to={`/shop/preview/${data.shop._id}`} style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
                   <img
-            src={`${data.image_Url && data.image_Url[0]?.url}`}
+                      src={`${data.shop.avatar && data.shop.avatar.url}`}
             alt=""
-            className="w-full h-[170px] object-contain"
+                      style={{ width: 50, height: 50, borderRadius: "50%", marginRight: 12, border: `2px solid ${GREEN}` }}
           />
                     <div>
-                        <div >
-                        <img
-            src={`${data.shop.avatar && data.shop.avatar.url}`}
-            alt=""
-            className="w-[50px] h-[50px] rounded-full"
-          />
+                      <h3 style={{ color: GREEN, fontWeight: 700, fontSize: 18 }}>{data.shop.name}</h3>
+                      <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+                        {[1,2,3,4,5].map(i => (
+                          data?.ratings >= i ? (
+                            <AiFillStar key={i} color={YELLOW} size={18} />
+                          ) : (
+                            <AiOutlineStar key={i} color={YELLOW} size={18} />
+                          )
+                        ))}
+                        <span style={{ color: "#888", fontSize: 15, marginLeft: 6 }}>{data?.ratings} Ratings</span>
                         </div>
-                      <h3 className={`${styles.shop_name}`}>
-                        {data.shop.name}
-                      </h3>
-                      <h5 className="pb-3 text-[15px]">
-                        {data?.rating} Ratings
-                      </h5>
                     </div>
                   </Link>
                 </div>
                 <div
-                  className={`${styles.button} bg-[#000] mt-4 rounded-[4px] h-11`}
-                //   onClick={handleMessageSubmit}
+                  style={{ marginTop: 20, borderRadius: 8, background: GREEN, boxShadow: SOFT_SHADOW }}
                 >
-                  <span className="text-[#fff] flex items-center">
-                    Send Message <AiOutlineMessage className="ml-1" />
-                  </span>
+                  <button
+                    style={{ background: "none", border: "none", color: "#fff", fontWeight: 600, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", width: "100%", padding: "12px 0" }}
+                    onClick={handleMessageSubmit}
+                >
+                    Send Message <AiOutlineMessage style={{ marginLeft: 8, color: YELLOW }} />
+                  </button>
                 </div>
-                <h5 className="text-[16px] text-[red] mt-5">(50) Sold out</h5>
+                <h5 style={{ fontSize: 16, color: ORANGE, marginTop: 20, fontWeight: 700 }}>(50) Sold out</h5>
               </div>
 
-              <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
-                <h1 className={`${styles.productTitle} text-[20px]`}>
-                  {data.name}
-                </h1>
-                <p>{data.description}</p>
+              <div style={{ flex: 1, minWidth: 280, paddingTop: 16 }}>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: GREEN, marginBottom: 8 }}>{data.name}</h1>
+                <p style={{ color: "#444", marginBottom: 16 }}>{data.description}</p>
 
-                <div className="flex pt-3">
-                  <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}$
-                  </h4>
-                  <h3 className={`${styles.price}`}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+                  <h4 style={{ color: GREEN, fontWeight: 700, fontSize: 22 }}>{data.discountPrice}$</h4>
+                  <h3 style={{ color: "#aaa", textDecoration: "line-through", fontWeight: 500, fontSize: 18 }}>
                     {data.originalPrice ? data.originalPrice + "$" : null}
                   </h3>
                 </div>
-                <div className="flex items-center mt-12 justify-between pr-3">
+                <div style={{ display: "flex", alignItems: "center", marginTop: 32, justifyContent: "space-between", gap: 16 }}>
                   <div>
                     <button
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
+                      style={{ background: GREEN, color: "#fff", fontWeight: 700, borderRadius: "8px 0 0 8px", padding: "8px 16px", border: "none", boxShadow: SOFT_SHADOW, fontSize: 20, cursor: "pointer", transition: "background 0.2s" }}
                       onClick={decrementCount}
                     >
                       -
                     </button>
-                    <span className="bg-gray-200 text-gray-800 font-medium px-4 py-[11px]">
-                      {count}
-                    </span>
+                    <span style={{ background: "#f5f5f5", color: GREEN, fontWeight: 700, padding: "8px 20px", fontSize: 18, border: `1px solid ${GREEN}` }}>{count}</span>
                     <button
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
+                      style={{ background: GREEN, color: "#fff", fontWeight: 700, borderRadius: "0 8px 8px 0", padding: "8px 16px", border: "none", boxShadow: SOFT_SHADOW, fontSize: 20, cursor: "pointer", transition: "background 0.2s" }}
                       onClick={incrementCount}
                     >
                       +
@@ -150,28 +179,31 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     {click ? (
                       <AiFillHeart
                         size={30}
-                        className="cursor-pointer"
+                        style={{ cursor: "pointer" }}
                          onClick={() => removeFromWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
+                        color={click ? ORANGE : "#333"}
                         title="Remove from wishlist"
                       />
                     ) : (
                       <AiOutlineHeart
                         size={30}
-                        className="cursor-pointer"
+                        style={{ cursor: "pointer" }}
                          onClick={() => addToWishlistHandler(data)}
+                        color={ORANGE}
                         title="Add to wishlist"
                       />
                     )}
                   </div>
                 </div>
                 <div
-                  className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
+                  style={{ marginTop: 32, borderRadius: 8, background: GREEN, boxShadow: SOFT_SHADOW }}
                   onClick={() => addToCartHandler(data._id)}
                 >
-                  <span className="text-[#fff] flex items-center">
-                    Add to cart <AiOutlineShoppingCart className="ml-1" />
-                  </span>
+                  <button
+                    style={{ background: "none", border: "none", color: "#fff", fontWeight: 600, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", width: "100%", padding: "12px 0" }}
+                  >
+                    Add to cart <AiOutlineShoppingCart style={{ marginLeft: 8, color: YELLOW }} />
+                  </button>
                 </div>
               </div>
             </div>

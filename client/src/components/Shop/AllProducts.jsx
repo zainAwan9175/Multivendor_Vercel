@@ -1,19 +1,29 @@
 import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
+import { getAllProductsShop, deleteProduct } from "../../redux/actions/product";
 import { Link } from "react-router-dom";
-
-import { deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
 
 const AllProducts = () => {
-  const { products, isLoading } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.product);
+  const { seller } = useSelector((state) => state.seller) 
 
+  useEffect(() => {
+    if (seller && seller._id) {
+      dispatch(getAllProductsShop(seller._id));
 
- 
-const dispatch=useDispatch();
+    }
+  }, [dispatch, seller]);
+  console.log("products",products)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("All");
+  
+  const [sortBy, setSortBy] = useState("All");
+
   const handleDelete = (id) => {
     dispatch(deleteProduct(id));
    window.location.reload();
@@ -417,8 +427,10 @@ const dispatch=useDispatch();
 
   const row = [];
 
+  console.log("Fetched products:", products);
   products &&
     products.forEach((item) => {
+      console.log("Product item:", item);
       row.push({
         id: item._id,
         name: item.name,
@@ -427,6 +439,7 @@ const dispatch=useDispatch();
         sold: item?.sold_out,
       });
     });
+  console.log("Rows for DataGrid:", row);
 
   return (
     <>

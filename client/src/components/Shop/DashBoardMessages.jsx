@@ -10,7 +10,7 @@ import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai"
 import styles from "../../styles/styles"
 import SocketIO from "socket.io-client"
 
-const ENDPOINTS = "https://multivendor-socket.vercel.app";
+const ENDPOINTS = "http://localhost:8000";
 
 const server = process.env.REACT_APP_BACKEND_URL
 
@@ -267,7 +267,7 @@ const DashBoardMessages = () => {
     <div className="w-full bg-white m-5 h-[85vh] overflow-y-scroll rounded ">
       {!open && (
         <>
-          <h1 className="text-center text-[30px] py-3 font-Poppins ">All Messages</h1>
+          <h1 className="text-center text-[30px] py-3 font-Poppins font-bold text-emerald-600 drop-shadow-md">All Messages</h1>
           {conversation.map((item, index) => (
             <MessageList
               key={index}
@@ -340,21 +340,21 @@ const MessageList = ({ item, index, setOpen, setCurrentChat, me, setUserData, us
     >
       <div className="relative">
         <img
-          className="w-[50px] h-[50px] rounded-full "
+          className="w-[50px] h-[50px] rounded-full border-2 border-emerald-400 shadow-sm object-cover"
           src={
             user?.avatar?.url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
           }
           alt="User Avatar"
         />
         {online ? (
-          <div className="w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]"></div>
+          <div className="w-[12px] h-[12px] bg-emerald-500 border-2 border-white rounded-full absolute top-[2px] right-[2px] shadow"></div>
         ) : (
-          <div className="w-[12px] h-[12px] bg-[#00000016] rounded-full absolute top-[2px] right-[2px]"></div>
+          <div className="w-[12px] h-[12px] bg-gray-300 border-2 border-white rounded-full absolute top-[2px] right-[2px] shadow"></div>
         )}
       </div>
       <div className="pl-3">
-        <h1 className=" text-[18px]">{user?.name}</h1>
-        <p className="text-[16px] text-[#000c]">
+        <h1 className="text-[18px] font-semibold text-emerald-700">{user?.name}</h1>
+        <p className="text-[16px] text-gray-600">
           <span>
             {item?.lastMessageId !== user?._id ? "YOU: " : `${user?.name?.split(" ")[0]}: `}
             {item?.lastMessage}
@@ -381,11 +381,11 @@ const SellerInbox = ({
   return (
     <div className="w-full min-h-screen flex flex-col justify-between">
       {/* Message Header */}
-      <div className="w-full flex items-center justify-between p-3 bg-slate-200">
-        <div className="flex">
+      <div className="w-full flex items-center justify-between p-3 bg-emerald-100 rounded-t-lg shadow-sm">
+        <div className="flex items-center gap-3">
           <img
             alt="User Avatar"
-            className="w-[60px] h-[60px] rounded-full"
+            className="w-[60px] h-[60px] rounded-full border-2 border-emerald-400 object-cover shadow"
             src={
               userData?.avatar?.url ||
               "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" ||
@@ -393,15 +393,15 @@ const SellerInbox = ({
             }
           />
           <div className="pl-3">
-            <h1 className="text-[18px] font-[600]">{userData?.name}</h1>
-            <h1 className="">{activestatus ? "Active Now" : null}</h1>
+            <h1 className="text-[18px] font-bold text-emerald-700">{userData?.name}</h1>
+            <h1 className="text-amber-500 font-medium">{activestatus ? "Active Now" : null}</h1>
           </div>
         </div>
-        <AiOutlineArrowRight size={20} className="cursor-pointer" onClick={() => setOpen(false)} />
+        <AiOutlineArrowRight size={24} className="cursor-pointer text-emerald-600 hover:scale-110 transition-transform" onClick={() => setOpen(false)} />
       </div>
 
       {/* Messages Map */}
-      <div className="px-3 h-[65vh] py-3 overflow-y-scroll">
+      <div className="px-3 h-[65vh] py-3 overflow-y-scroll bg-emerald-50 rounded-b-lg">
         {messages &&
           messages.map((item, index) => {
             return (
@@ -418,7 +418,7 @@ const SellerInbox = ({
                       "/placeholder.svg"
                     }
                     alt="sender-image"
-                    className="w-[40px] h-[40px] rounded-full mr-3"
+                    className="w-[40px] h-[40px] rounded-full mr-3 border-2 border-amber-400 object-cover shadow"
                   />
                 )}
                 <div className="flex flex-col">
@@ -426,16 +426,16 @@ const SellerInbox = ({
                     <div className="relative">
                       <img
                         src={item.images?.url || "/placeholder.svg"}
-                        className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2 mb-2"
+                        className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2 mb-2 border-2 border-emerald-200 shadow"
                         alt="Message Image"
                         onError={(e) => {
                           e.target.src = "/placeholder.svg?height=300&width=300"
                         }}
                       />
                       <div className="flex items-center gap-2 justify-end mt-1 mr-2">
-                        <p className="text-[12px] text-[#000000d3]">{format(item.createdAt)}</p>
+                        <p className="text-[12px] text-gray-500">{format(item.createdAt)}</p>
                         {item.sender === sellerId && (
-                          <span className={`text-[12px] ${item.seen ? "text-blue-500" : "text-gray-500"}`}>
+                          <span className={`text-[12px] ${item.seen ? "text-emerald-600" : "text-gray-400"}`}>
                             {item.seen ? "✓✓" : "✓"}
                           </span>
                         )}
@@ -446,16 +446,18 @@ const SellerInbox = ({
                   {item.text?.trim() && (
                     <div>
                       <div
-                        className={`w-max p-2 rounded ${
-                          item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
-                        } text-[#fff] h-min`}
+                        className={`w-max max-w-xs p-2 rounded-lg shadow ${
+                          item.sender === sellerId
+                            ? "bg-emerald-600 text-white ml-auto"
+                            : "bg-amber-400 text-white"
+                        }`}
                       >
-                        <p>{item?.text}</p>
+                        <p className="break-words">{item?.text}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <p className="text-[12px] text-[#000000d3] pt-1">{format(item.createdAt)}</p>
+                        <p className="text-[12px] text-gray-500 pt-1">{format(item.createdAt)}</p>
                         {item.sender === sellerId && (
-                          <span className={`text-[12px] ${item.seen ? "text-blue-500" : "text-gray-500"}`}>
+                          <span className={`text-[12px] ${item.seen ? "text-emerald-600" : "text-gray-400"}`}>
                             {item.seen ? "✓✓" : "✓"}
                           </span>
                         )}
@@ -468,9 +470,9 @@ const SellerInbox = ({
           })}
         {loading && (
           <div className="flex justify-end">
-            <div className="bg-gray-200 p-2 rounded flex items-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
-              <p>Uploading image...</p>
+            <div className="bg-amber-100 p-2 rounded flex items-center gap-2 shadow">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-500"></div>
+              <p className="text-amber-700">Uploading image...</p>
             </div>
           </div>
         )}
@@ -479,10 +481,10 @@ const SellerInbox = ({
       {/* Send Message Input */}
       <form
         aria-required={true}
-        className="p-3 relative w-full flex justify-between items-center"
+        className="p-3 relative w-full flex justify-between items-center bg-white rounded-b-lg shadow-inner mt-2"
         onSubmit={sendMessageHandler}
       >
-        <div className="w-[3%]">
+        <div className="w-[30px]">
           <input
             type="file"
             name=""
@@ -493,12 +495,12 @@ const SellerInbox = ({
             disabled={loading}
           />
           <label htmlFor="image">
-            <TfiGallery size={20} className={`cursor-pointer ${loading ? "opacity-50" : ""}`} />
+            <TfiGallery size={22} className={`cursor-pointer text-amber-500 hover:text-amber-600 transition-colors ${loading ? "opacity-50" : ""}`} />
           </label>
         </div>
-        <div className="w-[97%]">
+        <div className="w-full relative">
           <input
-            className={`${styles.input}`}
+            className={`w-full border border-emerald-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-all ${loading ? "bg-gray-100" : "bg-white"}`}
             type="text"
             placeholder="Enter Your Message"
             value={newmessage}
@@ -507,7 +509,7 @@ const SellerInbox = ({
           />
           <input type="submit" required value="send" className="hidden" id="send" />
           <label htmlFor="send">
-            <AiOutlineSend size={20} className="absolute right-4 top-5 cursor-pointer" />
+            <AiOutlineSend size={22} className="absolute right-4 top-2.5 cursor-pointer text-emerald-600 hover:text-emerald-700 transition-colors" />
           </label>
         </div>
       </form>

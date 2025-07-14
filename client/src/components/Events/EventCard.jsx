@@ -1,4 +1,3 @@
-
 import React from "react";
 import styles from "../../styles/styles";
 import CountDown from "./CountDown";
@@ -6,10 +5,14 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/reducers/cart";
 import { toast } from "react-toastify";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { useState } from "react";
 
 const EventCard = ({ active, data }) => {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  // Wishlist demo state (replace with redux if needed)
+  const [wish, setWish] = useState(false);
 
   const addToCartHandler = (data) => {
     const isItemExists = cart && cart.find((i) => i._id === data._id);
@@ -25,46 +28,59 @@ const EventCard = ({ active, data }) => {
       }
     }
   };
+
   return (
-    <div
-      className={`w-full block bg-white rounded-lg ${
-        active ? "unset" : "mb-12"
-      } lg:flex p-2`}
-    >
-      <div className="w-full lg:-w[50%] m-auto">
-  <img
-            src={`${data.images && data.images[0]?.url}`}
-            alt=""
-      
-          />  </div>
-      <div className="w-full lg:[w-50%] flex flex-col justify-center">
-        <h2 className={`${styles.productTitle}`}>{data.name}</h2>
-        <p>{data.description}</p>
-        <div className="flex py-2 justify-between">
-          <div className="flex">
-            <h5 className="font-[500] text-[18px] text-[#d55b45] pr-3 line-through">
-              {data.originalPrice}$
-            </h5>
-            <h5 className="font-bold text-[20px] text-[#333] font-Roboto">
-              {data.discountPrice}$
-            </h5>
-          </div>
-          <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">
-            {data.sold_out} sold
+    <div className="w-full max-w-full bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row items-stretch gap-0 mb-12 overflow-hidden p-0 transition-all duration-300 group hover:shadow-[0_16px_64px_0_rgba(16,185,129,0.22)] border border-emerald-100">
+      {/* Wishlist icon */}
+      <div className="absolute top-6 right-8 z-20">
+        {wish ? (
+          <AiFillHeart size={32} className="text-amber-400 drop-shadow cursor-pointer transition-transform hover:scale-110" onClick={() => setWish(false)} title="Remove from wishlist" />
+        ) : (
+          <AiOutlineHeart size={32} className="text-emerald-500 drop-shadow cursor-pointer transition-transform hover:scale-110" onClick={() => setWish(true)} title="Add to wishlist" />
+        )}
+      </div>
+
+      {/* Image section */}
+      <div className="flex-shrink-0 w-full md:w-[340px] flex items-center justify-center bg-white p-8 md:p-10">
+        <img
+          src={`${data.images && data.images[0]?.url}`}
+          alt=""
+          className="w-[220px] h-[220px] object-contain rounded-2xl shadow-2xl bg-white border-4 border-white"
+          style={{ boxShadow: '0 8px 32px 0 rgba(16, 185, 129, 0.10), 0 1.5px 8px 0 rgba(251, 191, 36, 0.10)' }}
+        />
+      </div>
+
+      {/* Content section */}
+      <div className="flex-1 flex flex-col justify-center px-6 py-8 md:py-10 md:px-10 relative">
+        {/* Sold badge */}
+        <span className="absolute top-4 right-4 bg-amber-100 text-amber-600 text-xs font-bold px-4 py-1 rounded-full shadow border border-amber-200 z-10">
+          {data.sold_out} Sold
+        </span>
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-emerald-800 font-[Poppins] mb-2 drop-shadow leading-tight">{data.name}</h2>
+        {data.description && (
+          <p className="text-[16px] leading-snug font-sans font-medium text-emerald-900 bg-emerald-50/80 rounded-lg px-4 py-3 mb-3 shadow-sm border border-emerald-100 max-w-2xl">
+            {data.description.length > 120 ? data.description.slice(0, 120) + "..." : data.description}
+          </p>
+        )}
+        <div className="flex items-center gap-6 mb-3">
+          <span className="text-lg text-amber-400 line-through font-semibold">{data.originalPrice}$</span>
+          <span className="text-2xl font-bold text-emerald-700">{data.discountPrice}$</span>
+        </div>
+        <div className="mb-4">
+                          <span className="inline-block bg-white text-emerald-700 font-bold px-8 py-3 rounded-full shadow-lg text-lg tracking-wide">
+            <CountDown data={data} />
           </span>
         </div>
-        <CountDown data={data} />
-        <br />
-        <div className="flex items-center">
+        <div className="flex gap-4 mt-2">
           <Link to={`/product/${data._id}?isEvent=true`}>
-            <div className={`${styles.button} text-[#fff]`}>See Details</div>
+            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-[Poppins] text-base md:text-lg font-semibold px-8 py-3 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-emerald-200">See Details</button>
           </Link>
-          <div
-            className={`${styles.button} text-[#fff] ml-5`}
-             onClick={() => addToCartHandler(data)}
+          <button
+            className="bg-amber-400 hover:bg-amber-500 text-emerald-900 font-[Poppins] text-base md:text-lg font-semibold px-8 py-3 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-amber-200"
+            onClick={() => addToCartHandler(data)}
           >
-            Add to cart
-          </div>
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>

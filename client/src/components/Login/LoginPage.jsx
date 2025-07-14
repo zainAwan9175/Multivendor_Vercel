@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -11,11 +12,11 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
-  const [loading, setLoading] = useState(false); // <-- Loader state
+  const [loading, setLoading] = useState(false);
 
   const submitFormHandler = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       await axios
         .post(
@@ -30,135 +31,151 @@ const LoginPage = () => {
         })
         .catch((e) => {
           toast.error(e.response.data.message);
-          setLoading(false); // Stop loading on error
+          setLoading(false);
         });
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
-      setLoading(false); // Stop loading on error
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Login
-        </h2>
+    <div className="h-screen bg-gradient-to-br from-emerald-50 via-white to-amber-50 flex flex-col justify-center items-center px-4 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+      <div className="absolute top-0 right-0 w-72 h-72 bg-amber-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-8 left-20 w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+      
+      <div className="relative z-10 w-full max-w-md">
+        <div className="text-center mb-4">
+          <h1 className="text-3xl font-extrabold tracking-wider font-[Poppins] text-emerald-600 mb-1">
+            Market<span className="text-amber-400">Nest</span>
+          </h1>
+          <h2 className="text-xl font-bold text-emerald-800 mb-1">Welcome Back</h2>
+          <p className="text-emerald-600 text-xs">Sign in to your account</p>
+        </div>
       </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={submitFormHandler}>
-            <div className="block text-sm font-medium text-gray-700">
-              <label htmlFor="email">Email Address</label>
-              <div className="mt-1">
+      
+      <div className="relative z-10 w-full max-w-md">
+        <div className="bg-white/80 backdrop-blur-md py-6 px-5 shadow-2xl rounded-2xl border border-emerald-100">
+          <form className="space-y-4" onSubmit={submitFormHandler}>
+            {/* Email Input */}
+            <div className="space-y-1">
+              <label htmlFor="email" className="block text-xs font-semibold text-emerald-800">
+                Email Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <HiOutlineMail className="h-4 w-4 text-emerald-500" />
+                </div>
                 <input
                   type="email"
                   name="email"
                   autoComplete="email"
                   required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  disabled={loading}
+                  className="block w-full pl-9 pr-3 py-2 border-2 border-emerald-200 rounded-lg shadow-sm placeholder-emerald-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 text-emerald-800 font-medium transition-all duration-200 disabled:bg-emerald-50 disabled:cursor-not-allowed text-sm"
+                  placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className="block text-sm font-medium text-gray-700">
-              <label htmlFor="password">Password</label>
-              <div className="mt-1 relative">
+            {/* Password Input */}
+            <div className="space-y-1">
+              <label htmlFor="password" className="block text-xs font-semibold text-emerald-800">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <HiOutlineLockClosed className="h-4 w-4 text-emerald-500" />
+                </div>
                 <input
                   type={visible ? "text" : "password"}
                   name="password"
                   autoComplete="current-password"
                   required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  disabled={loading}
+                  className="block w-full pl-9 pr-10 py-2 border-2 border-emerald-200 rounded-lg shadow-sm placeholder-emerald-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 text-emerald-800 font-medium transition-all duration-200 disabled:bg-emerald-50 disabled:cursor-not-allowed text-sm"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                {visible ? (
-                  <AiOutlineEye
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisible(false)}
-                  />
-                ) : (
-                  <AiOutlineEyeInvisible
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisible(true)}
-                  />
-                )}
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setVisible(!visible)}
+                >
+                  {visible ? (
+                    <AiOutlineEye className="h-4 w-4 text-emerald-500 hover:text-amber-500 transition-colors" />
+                  ) : (
+                    <AiOutlineEyeInvisible className="h-4 w-4 text-emerald-500 hover:text-amber-500 transition-colors" />
+                  )}
+                </button>
               </div>
             </div>
 
-            <div className={`${styles.normalFlex} justify-between`}>
-              <div className={`${styles.normalFlex}`}>
+            {/* Remember Me and Forgot Password */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <input
                   type="checkbox"
                   name="remember-me"
                   id="remember-me"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-emerald-300 rounded"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
+                  className="ml-2 block text-xs text-emerald-700 font-medium"
                 >
                   Remember Me
                 </label>
               </div>
 
-              <div className="text-sm">
+              <div className="text-xs">
                 <a
                   href="/forgot-password"
-                  className="font-medium text-blue-600 hover:text-blue-500"
+                  className="font-semibold text-amber-600 hover:text-amber-700 transition-colors duration-200"
                 >
                   Forgot Password?
                 </a>
               </div>
             </div>
 
-            <div>
+            {/* Submit Button */}
+            <div className="pt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className={`group relative w-full h-[40px] flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                  loading
-                    ? "bg-blue-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
+                className={`group relative w-full h-10 flex justify-center items-center py-2 px-4 border border-transparent text-sm font-bold rounded-lg text-white transition-all duration-200 ${
+                  loading 
+                    ? "bg-emerald-300 cursor-not-allowed" 
+                    : "bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
                 }`}
               >
                 {loading ? (
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Signing In...
+                  </div>
                 ) : (
-                  "Submit"
+                  "Sign In"
                 )}
               </button>
             </div>
 
-            <div className={`${styles.normalFlex} w-full`}>
-              <h4>Not have any account?</h4>
-              <Link className="text-blue-600 pl-2" to="/sign-up">
-                Sign Up
-              </Link>
+            {/* Sign Up Link */}
+            <div className="text-center pt-2">
+              <p className="text-emerald-700 text-xs">
+                Don't have an account?{" "}
+                <Link 
+                  to="/sign-up" 
+                  className="font-semibold text-amber-600 hover:text-amber-700 transition-colors duration-200"
+                >
+                  Sign Up
+                </Link>
+              </p>
             </div>
           </form>
         </div>

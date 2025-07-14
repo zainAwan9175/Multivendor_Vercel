@@ -14,7 +14,7 @@ router.post(
     try {
       const { cart, shippingAddress, user, totalPrice, paymnentInfo } = req.body;
 
-      //   create map with key shopI to seprate teh  items of the shop
+      //   create map with key shopId to seprate each  items of the shop
       const shopItemsMap = new Map();
 
       for (const item of cart) {
@@ -37,8 +37,13 @@ for (let i = 0; i < items.length; i++) {
   
 }
   const shipping = calculatedTotalPrice * 0.1;
-  calculatedTotalPrice=calculatedTotalPrice+shipping
-        const order = await Order.create({
+  calculatedTotalPrice=calculatedTotalPrice+shipping;
+  const shop = await Shop.findById(shopId);
+shop.availableBalance = shop.availableBalance + calculatedTotalPrice;
+await shop.save({ validateBeforeSave: false });
+
+  await shop.save({validateBeforeSave:false})
+          const order = await Order.create({
           cart: items,
           shippingAddress,
           user,
@@ -110,9 +115,11 @@ router.put(
         return next(new ErrorHandler("Order not found with this id", 400));
       }
       if (req.body.status === "Transferred to delivery partner") {
-        order.cart.forEach(async (o) => {
+        console.log("Updating stock for order:", req.params.id);
+        for (const o of order.cart) {
+          console.log("Updating product:", o._id, "qty:", o.qty);
           await updateOrder(o._id, o.qty);
-        });
+        }
       }
 
       order.status = req.body.status;
@@ -132,10 +139,16 @@ router.put(
       });
 
       async function updateOrder(id, qty) {
-        const product=await Product.findById(id)
-          product.stock-=qty;
-          product.sold_out+=qty
-         await product.save({ validateBeforeSave: false })
+        const product = await Product.findById(id);
+        if (product) {
+          console.log("Before update - Product:", product.name, "Stock:", product.stock, "Sold:", product.sold_out);
+          product.stock -= qty;
+          product.sold_out += qty;
+          await product.save({ validateBeforeSave: false });
+          console.log("After update - Product:", product.name, "Stock:", product.stock, "Sold:", product.sold_out);
+        } else {
+          console.log("Product not found with ID:", id);
+        }
       }
 
       async function updateSellerInfo(amount) {}
@@ -193,15 +206,18 @@ router.put(
       });
 
       if (req.body.status === "Refund Success") {
-        order.cart.forEach(async (o) => {
+        for (const o of order.cart) {
           await updateOrder(o._id, o.qty);
-        });
+        }
       }
 
       async function updateOrder(id, qty) {
-        const product=await Product.findById(id);
-        product.stock+=qty
-        product.sold_out-=qty
+        const product = await Product.findById(id);
+        if (product) {
+          product.stock += qty;
+          product.sold_out -= qty;
+          await product.save({ validateBeforeSave: false });
+        }
       } 
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

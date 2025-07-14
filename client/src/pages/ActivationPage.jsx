@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+
 import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ActivationPage = () => {
   const { activation_token } = useParams();
   const [status, setStatus] = useState("loading");
+  const navigate = useNavigate(); // initialize the hook
+
 
   console.log("ActivationPage rendered, token:", activation_token); // Add this debug line
 
@@ -14,13 +17,15 @@ const ActivationPage = () => {
       console.log("Sending activation request with token:", activation_token); // Add this debug line
       
       const sendResponse = async () => {
-        try {
+        try { 
           const response = await axios.post(`https://multivendor-server.vercel.app/user/activation`, { activation_token });
           console.log("Activation response:", response.data); // Add this debug line
           setStatus("success");
           toast.success("Account created successfully");
+          navigate("/Login"); 
+
         } catch (error) {
-// Add this debug line
+
           setStatus("error");
           toast.error(error.response.data.message);
         }

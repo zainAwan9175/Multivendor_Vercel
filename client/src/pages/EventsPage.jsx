@@ -24,7 +24,9 @@ const EventsPage = () => {
     <br />
     <div className={`${styles.section} mt-8`}>
   <div className="w-full">
-    <h1 className="text-3xl font-bold text-center mb-8">All Events</h1>
+    <h1 className="text-4xl md:text-5xl font-extrabold font-[Poppins] text-emerald-700 drop-shadow-lg tracking-wide text-center mb-8">
+  All <span className="text-amber-500">Events</span>
+</h1>
     <div className="flex flex-col gap-6">
       {allEvents.map((item, index) => (
         <EventCard key={index} data={item} />

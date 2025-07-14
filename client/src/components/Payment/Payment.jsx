@@ -25,6 +25,7 @@ const Payment = () => {
   const elements = useElements();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const orderData = JSON.parse(localStorage.getItem("latestOrder"));
     setOrderData(orderData);
   }, []);
@@ -177,8 +178,8 @@ const Payment = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center py-8">
-      <div className="w-[90%] 1000px:w-[70%] block 800px:flex">
+    <div className="w-full flex flex-col items-center py-8 bg-emerald-50 min-h-screen">
+      <div className="w-[90%] 1000px:w-[70%] block 800px:flex gap-8">
         <div className="w-full 800px:w-[65%]">
           <PaymentInfo
             user={user}
@@ -210,53 +211,54 @@ const PaymentInfo = ({
   const [select, setSelect] = useState(1);
 
   return (
-    <div className="w-full 800px:w-[95%] bg-[#fff] rounded-md p-5 pb-8">
+    <div className="w-full 800px:w-[95%] bg-white rounded-xl p-6 pb-8 shadow-lg border border-emerald-100">
+      <h5 className="text-[20px] font-bold text-emerald-800 mb-6">Payment Methods</h5>
       {/* select buttons */}
-      <div>
-        <div className="flex w-full pb-5 border-b mb-2">
+      <div className="space-y-6">
+        <div className="flex w-full pb-4 border-b border-emerald-200 mb-4">
           <div
-            className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center"
+            className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-emerald-400 relative flex items-center justify-center cursor-pointer hover:border-emerald-600 transition-colors"
             onClick={() => setSelect(1)}
           >
             {select === 1 ? (
-              <div className="w-[13px] h-[13px] bg-[#1d1a1acb] rounded-full" />
+              <div className="w-[13px] h-[13px] bg-emerald-600 rounded-full" />
             ) : null}
           </div>
-          <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
-            Pay with Debit/credit card
+          <h4 className="text-[18px] pl-3 font-semibold text-emerald-800">
+            Pay with Debit/Credit Card
           </h4>
         </div>
 
         {/* pay with card */}
         {select === 1 ? (
-          <div className="w-full flex border-b">
-            <form className="w-full" onSubmit={paymentHandler}>
-              <div className="w-full flex pb-3">
+          <div className="w-full pb-6">
+            <form className="w-full space-y-4" onSubmit={paymentHandler}>
+              <div className="w-full flex gap-4">
                 <div className="w-[50%]">
-                  <label className="block pb-2">Name On Card</label>
+                  <label className="block pb-2 text-sm font-semibold text-emerald-700">Name On Card</label>
                   <input
                     required
                     placeholder={user && user.name}
-                    className={`${styles.input} !w-[95%] text-[#444]`}
+                    className="w-full px-3 py-2 border-2 border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all text-emerald-800"
                     value={user && user.name}
                   />
                 </div>
                 <div className="w-[50%]">
-                  <label className="block pb-2">Exp Date</label>
+                  <label className="block pb-2 text-sm font-semibold text-emerald-700">Exp Date</label>
                   <CardExpiryElement
-                    className={`${styles.input}`}
+                    className="w-full px-3 py-2 border-2 border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                     options={{
                       style: {
                         base: {
-                          fontSize: "19px",
+                          fontSize: "16px",
                           lineHeight: 1.5,
-                          color: "#444",
+                          color: "#065f46",
                         },
                         empty: {
-                          color: "#3a120a",
+                          color: "#065f46",
                           backgroundColor: "transparent",
                           "::placeholder": {
-                            color: "#444",
+                            color: "#059669",
                           },
                         },
                       },
@@ -265,23 +267,23 @@ const PaymentInfo = ({
                 </div>
               </div>
 
-              <div className="w-full flex pb-3">
+              <div className="w-full flex gap-4">
                 <div className="w-[50%]">
-                  <label className="block pb-2">Card Number</label>
+                  <label className="block pb-2 text-sm font-semibold text-emerald-700">Card Number</label>
                   <CardNumberElement
-                    className={`${styles.input} !h-[35px] !w-[95%]`}
+                    className="w-full px-3 py-2 border-2 border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                     options={{
                       style: {
                         base: {
-                          fontSize: "19px",
+                          fontSize: "16px",
                           lineHeight: 1.5,
-                          color: "#444",
+                          color: "#065f46",
                         },
                         empty: {
-                          color: "#3a120a",
+                          color: "#065f46",
                           backgroundColor: "transparent",
                           "::placeholder": {
-                            color: "#444",
+                            color: "#059669",
                           },
                         },
                       },
@@ -289,21 +291,21 @@ const PaymentInfo = ({
                   />
                 </div>
                 <div className="w-[50%]">
-                  <label className="block pb-2">CVV</label>
+                  <label className="block pb-2 text-sm font-semibold text-emerald-700">CVV</label>
                   <CardCvcElement
-                    className={`${styles.input} !h-[35px]`}
+                    className="w-full px-3 py-2 border-2 border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                     options={{
                       style: {
                         base: {
-                          fontSize: "19px",
+                          fontSize: "16px",
                           lineHeight: 1.5,
-                          color: "#444",
+                          color: "#065f46",
                         },
                         empty: {
-                          color: "#3a120a",
+                          color: "#065f46",
                           backgroundColor: "transparent",
                           "::placeholder": {
-                            color: "#444",
+                            color: "#059669",
                           },
                         },
                       },
@@ -313,39 +315,38 @@ const PaymentInfo = ({
               </div>
               <input
                 type="submit"
-                value="Submit"
-                className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+                value="Submit Payment"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg cursor-pointer transition-all hover:scale-105 mt-4"
               />
             </form>
           </div>
         ) : null}
       </div>
 
-      <br />
       {/* paypal payment */}
       <div>
-        <div className="flex w-full pb-5 border-b mb-2">
+        <div className="flex w-full pb-4 border-b border-emerald-200 mb-4">
           <div
-            className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center"
+            className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-emerald-400 relative flex items-center justify-center cursor-pointer hover:border-emerald-600 transition-colors"
             onClick={() => setSelect(2)}
           >
             {select === 2 ? (
-              <div className="w-[13px] h-[13px] bg-[#1d1a1acb] rounded-full" />
+              <div className="w-[13px] h-[13px] bg-emerald-600 rounded-full" />
             ) : null}
           </div>
-          <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
-            Pay with Paypal
+          <h4 className="text-[18px] pl-3 font-semibold text-emerald-800">
+            Pay with PayPal
           </h4>
         </div>
 
         {/* pay with payement */}
         {select === 2 ? (
-          <div className="w-full flex border-b">
+          <div className="w-full pb-6">
             <div
-              className={`${styles.button} !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg cursor-pointer transition-all hover:scale-105 text-center"
               onClick={() => setOpen(true)}
             >
-              Pay Now
+              Pay with PayPal
             </div>
             {open && (
               <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen flex items-center justify-center z-[99999]">
@@ -376,31 +377,30 @@ const PaymentInfo = ({
         ) : null}
       </div>
 
-      <br />
       {/* cash on delivery */}
       <div>
-        <div className="flex w-full pb-5 border-b mb-2">
+        <div className="flex w-full pb-4 border-b border-emerald-200 mb-4">
           <div
-            className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center"
+            className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-emerald-400 relative flex items-center justify-center cursor-pointer hover:border-emerald-600 transition-colors"
             onClick={() => setSelect(3)}
           >
             {select === 3 ? (
-              <div className="w-[13px] h-[13px] bg-[#1d1a1acb] rounded-full" />
+              <div className="w-[13px] h-[13px] bg-emerald-600 rounded-full" />
             ) : null}
           </div>
-          <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
+          <h4 className="text-[18px] pl-3 font-semibold text-emerald-800">
             Cash on Delivery
           </h4>
         </div>
 
         {/* cash on delivery */}
         {select === 3 ? (
-          <div className="w-full flex">
+          <div className="w-full pb-6">
             <form className="w-full" onSubmit={cashOnDeliveryHandler}>
               <input
                 type="submit"
-                value="Confirm"
-                className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+                value="Confirm Order"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg cursor-pointer transition-all hover:scale-105"
               />
             </form>
           </div>
@@ -413,27 +413,30 @@ const PaymentInfo = ({
 const CartData = ({ orderData }) => {
   const shipping = orderData?.shipping?.toFixed(2);
   return (
-    <div className="w-full bg-[#fff] rounded-md p-5 pb-8">
-      <div className="flex justify-between">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
-        <h5 className="text-[18px] font-[600]">${orderData?.subTotalPrice}</h5>
+    <div className="w-full bg-white rounded-xl p-6 pb-8 shadow-lg border border-emerald-100">
+      <h5 className="text-[20px] font-bold text-emerald-800 mb-4">Order Summary</h5>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center py-2">
+          <h3 className="text-[16px] font-medium text-emerald-700">Subtotal:</h3>
+          <h5 className="text-[18px] font-semibold text-emerald-800">${orderData?.subTotalPrice}</h5>
       </div>
-      <br />
-      <div className="flex justify-between">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">shipping:</h3>
-        <h5 className="text-[18px] font-[600]">${shipping}</h5>
+        <div className="flex justify-between items-center py-2">
+          <h3 className="text-[16px] font-medium text-emerald-700">Shipping:</h3>
+          <h5 className="text-[18px] font-semibold text-emerald-800">${shipping}</h5>
       </div>
-      <br />
-      <div className="flex justify-between border-b pb-3">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
-        <h5 className="text-[18px] font-[600]">
+        <div className="flex justify-between items-center py-2 border-b border-emerald-200 pb-4">
+          <h3 className="text-[16px] font-medium text-emerald-700">Discount:</h3>
+          <h5 className="text-[18px] font-semibold text-amber-600">
           {orderData?.discountPrice ? "$" + orderData.discountPrice : "-"}
         </h5>
       </div>
-      <h5 className="text-[18px] font-[600] text-end pt-3">
+        <div className="flex justify-between items-center pt-2">
+          <h3 className="text-[20px] font-bold text-emerald-800">Total:</h3>
+          <h5 className="text-[22px] font-bold text-emerald-800">
         ${orderData?.totalPrice}
       </h5>
-      <br />
+        </div>
+      </div>
     </div>
   );
 };
